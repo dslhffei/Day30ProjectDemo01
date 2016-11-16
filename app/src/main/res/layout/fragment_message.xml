@@ -1,0 +1,28 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.jayce.week7homeworktea01.fragments.MessageFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/refresh_message">
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/listView1"/>
+
+        <TextView
+            android:id="@+id/empty1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="数据加载中···"
+            android:layout_gravity="center"/>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+</FrameLayout>

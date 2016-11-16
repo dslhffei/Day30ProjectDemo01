@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--<android.support.v4.view.ViewPager-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="200dp"-->
+        <!--android:id="@+id/viewPager_title"></android.support.v4.view.ViewPager>-->
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:src="@mipmap/header_one"
+        android:id="@+id/header_one"/>
+
+    <TextView
+        android:id="@+id/headerText"
+        android:layout_marginLeft="20dp"
+        android:text="jayce_jayce"
+        android:textColor="#800f"
+        android:textSize="18sp"
+        android:layout_alignBottom="@id/header_one"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:layout_alignBottom="@id/header_one"
+        android:id="@+id/first_point"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/point"
+        android:layout_marginRight="20dp"/>
+
+    <ImageView
+        android:layout_alignBottom="@id/header_one"
+        android:id="@+id/second_point"
+        android:layout_toLeftOf="@id/first_point"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/point"
+        android:layout_marginRight="20dp"/>
+
+    <ImageView
+        android:layout_alignBottom="@id/header_one"
+        android:layout_toLeftOf="@id/second_point"
+        android:id="@+id/third_point"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/point"
+        android:layout_marginRight="20dp"/>
+
+</RelativeLayout>

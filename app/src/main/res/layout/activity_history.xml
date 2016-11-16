@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_history"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.jayce.week7homeworktea01.Activitys.HistoryActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        >
+
+        <ImageView
+            android:layout_alignParentLeft="true"
+            android:id="@+id/collection_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/searchbackbtn"
+            android:onClick="onClick"/>
+
+        <TextView
+            android:layout_centerInParent="true"
+            android:id="@+id/my_collection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#6c6c7e"
+            android:text="历史访问记录"
+            android:textSize="35sp"
+            />
+
+        <ImageView
+            android:id="@+id/collection_home"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/righttopbutton"
+            android:layout_alignParentRight="true"
+            />
+
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/collection_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="9"/>
+
+</LinearLayout>
