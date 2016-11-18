@@ -18,11 +18,12 @@ public class MyAsycnTask extends AsyncTask<String,Void,byte[]>{
 
     @Override
     protected byte[] doInBackground(String... params) {
+
         String path = params[0];
 
         byte[] ret = null;
 
-        ret = HttpUtils.parse(path);
+        ret = HttpUtils.getByteFromUrl(path);
 
 
 

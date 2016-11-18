@@ -11,7 +11,7 @@ import com.jayce.week7homeworktea01.utils.HttpUtils;
 /**
  * Created by 会函 on 2016/11/12.
  */
-public class BitmapAsycnTask extends AsyncTask<String,Void,Bitmap>{
+public class BitmapAsycnTask extends AsyncTask<String,Void,byte[]>{
 
     private MyBaseAdapter.bitmapCallBack bitmapcallback;
 
@@ -20,25 +20,27 @@ public class BitmapAsycnTask extends AsyncTask<String,Void,Bitmap>{
     }
 
     @Override
-    protected Bitmap doInBackground(String... params) {
+    protected byte[] doInBackground(String... params) {
 
         String path = params[0];
 
-        Log.d("flag", "doInBackground:data " + path);
+//        Log.d("flag", "doInBackground:data " + path);
 
-        byte[] bytes = HttpUtils.parse(path);
+        byte[] bytes = HttpUtils.getByteFromUrl(path);
 
 
-        Bitmap bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+//        Bitmap bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 
-        return bm;
+        return bytes;
     }
 
     @Override
-    protected void onPostExecute(Bitmap bitmap) {
-        super.onPostExecute(bitmap);
-        if (bitmap != null) {
-            bitmapcallback.callback(bitmap);
+    protected void onPostExecute(byte[] bytes) {
+        super.onPostExecute(bytes);
+        if (bytes != null) {
+            bitmapcallback.callback(bytes);
+        }else {
+            Log.d("flag", "------->onPostExecute:图片的异步任务失败 ");
         }
     }
 }

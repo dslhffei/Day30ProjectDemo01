@@ -27,7 +27,10 @@ import com.jayce.week7homeworktea01.R;
 import com.jayce.week7homeworktea01.Urls.myUrls;
 import com.jayce.week7homeworktea01.adapters.MyBaseAdapter;
 import com.jayce.week7homeworktea01.beans.Data;
+import com.jayce.week7homeworktea01.utils.NetWorkUtils;
+import com.jayce.week7homeworktea01.utils.SdCardUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,8 +60,18 @@ public class BusinnessFragment extends Fragment {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what){
-                case 198:
-                    List<Data.DataBean> cooks1 = (List<Data.DataBean>) msg.obj;
+                case 196:
+                    byte[] bytes = (byte[]) msg.obj;
+
+                    Data data = JSON.parseObject(new String(bytes), Data.class);
+
+                    List<Data.DataBean> cooks1 = data.getData();
+
+                    String root = getContext().getExternalCacheDir().getAbsolutePath();
+
+                    String fileName = "Business";
+
+                    SdCardUtils.saveFile(bytes,root,fileName);
 
                     mData.addAll(0,cooks1);
 
@@ -89,6 +102,8 @@ public class BusinnessFragment extends Fragment {
         initListView();
 
         initData();
+
+        initSwipeRefresh();
 
         return ret;
     }
@@ -121,14 +136,40 @@ public class BusinnessFragment extends Fragment {
 
 
     private void initData() {
-        new MyAsycnTask(new MyAsycnTask.AsycnTaskCallBack() {
-            @Override
-            public void AsycnTaskCallBack(byte[] bytes) {
-                Data data = JSON.parseObject(new String(bytes), Data.class);
-                mHandler.sendMessage(Message.obtain(mHandler,198,data.getData()));
+//        new MyAsycnTask(new MyAsycnTask.AsycnTaskCallBack() {
+//            @Override
+//            public void AsycnTaskCallBack(byte[] bytes) {
+//                Data data = JSON.parseObject(new String(bytes), Data.class);
+//                mHandler.sendMessage(Message.obtain(mHandler,196,data.getData()));
+//                mData.addAll(data.getData());
+//            }
+//        }).execute(MpathTitle+index);
+
+        if (NetWorkUtils.isConnected(getContext())) {
+            new MyAsycnTask(new MyAsycnTask.AsycnTaskCallBack() {
+                @Override
+                public void AsycnTaskCallBack(byte[] bytes) {
+//                    Data data = JSON.parseObject(new String(bytes), Data.class);
+                    mHandler.sendMessage(Message.obtain(mHandler,196,bytes));
+//                    mData.addAll(data.getData());
+                }
+            }).execute(MpathTitle+index);
+        }else {
+            //TODO 从磁盘获取网络数据
+            String root = getContext().getExternalCacheDir().getAbsolutePath();
+
+            String fileName = root+ File.separator+"Business";
+
+            byte[] bytes = SdCardUtils.getByteFromFile(fileName);
+
+            if (bytes != null) {
+                Data data = JSON.parseObject(new String(bytes),Data.class);
+
                 mData.addAll(data.getData());
+
+                mBaseAdapter.notifyDataSetChanged();
             }
-        }).execute(MpathTitle+index);
+        }
     }
 
     private void initListView() {
@@ -154,12 +195,20 @@ public class BusinnessFragment extends Fragment {
                 String title = mData.get(position).getTitle();
                 String creat_time = "时间："+mData.get(position).getCreate_time();
                 String source = "来源："+mData.get(position).getSource();
+                String _id = mData.get(position).getId();
+                String description = mData.get(position).getDescription();
+                String nickname = mData.get(position).getNickname();
+                String wap_thumb = mData.get(position).getWap_thumb();
                 Intent intent = new Intent(getContext(), WebViewActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("path",path);
                 bundle.putString("title",title);
                 bundle.putString("creat_time",creat_time);
                 bundle.putString("source",source);
+                bundle.putString("id",_id);
+                bundle.putString("description",description);
+                bundle.putString("nickname",nickname);
+                bundle.putString("wap_thumb",wap_thumb);
                 intent.putExtras(bundle);
                 startActivity(intent);
             }

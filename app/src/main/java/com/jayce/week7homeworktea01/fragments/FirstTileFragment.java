@@ -38,7 +38,10 @@ import com.jayce.week7homeworktea01.adapters.MyPagerAdapter;
 import com.jayce.week7homeworktea01.adapters.MyViewPagerAdapter;
 import com.jayce.week7homeworktea01.beans.Data;
 import com.jayce.week7homeworktea01.beans.TitleImage;
+import com.jayce.week7homeworktea01.utils.NetWorkUtils;
+import com.jayce.week7homeworktea01.utils.SdCardUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,7 +99,17 @@ public class FirstTileFragment extends Fragment {
             super.handleMessage(msg);
             switch (msg.what){
                 case 198:
-                    List<Data.DataBean> cooks1 = (List<Data.DataBean>) msg.obj;
+                    byte[] bytes = (byte[]) msg.obj;
+
+                    Data data = JSON.parseObject(new String(bytes), Data.class);
+
+                    List<Data.DataBean> cooks1 = data.getData();
+
+                    String root = getContext().getExternalCacheDir().getAbsolutePath();
+
+                    String fileName = "FirstTitle";
+
+                    SdCardUtils.saveFile(bytes,root,fileName);
 
                     mData.addAll(0,cooks1);
 
@@ -158,30 +171,28 @@ public class FirstTileFragment extends Fragment {
 //        mViewPager.setAdapter(mAdapter);
     }
 
-    private void initViewPagerData() {
-        new HeaderAsycnTask(new HeaderAsycnTask.headerCallBack() {
-            @Override
-            public void headercallback(byte[] bytes) {
-                TitleImage titleImage = JSON.parseObject(new String(bytes),TitleImage.class);
-//                mTitleImages.addAll(titleImage.getData());
-                for (int i = 0; i < 3; i++) {
-                    String imagePath = titleImage.getData().get(i).getImage_s();
-//                    Log.d("flag", "headercallback: "+imagePath);
-                    new BitmapAsycnTask(new MyBaseAdapter.bitmapCallBack() {
-                        @Override
-                        public void callback(Bitmap bitmap) {
-                            ImageView add = new ImageView(getContext());
-                            add.setImageBitmap(bitmap);
-                            headerImags.add(add);
-                            Log.d("flag", "------->callback: "+headerImags);
-                        }
-                    }).execute(imagePath);
-                }
-            }
-        }).execute(HeaderImg);
-
-
-    }
+//    private void initViewPagerData() {
+//        new HeaderAsycnTask(new HeaderAsycnTask.headerCallBack() {
+//            @Override
+//            public void headercallback(byte[] bytes) {
+//                TitleImage titleImage = JSON.parseObject(new String(bytes),TitleImage.class);
+////                mTitleImages.addAll(titleImage.getData());
+//                for (int i = 0; i < 3; i++) {
+//                    String imagePath = titleImage.getData().get(i).getImage_s();
+//                    new BitmapAsycnTask(new MyBaseAdapter.bitmapCallBack() {
+//                        @Override
+//                        public void callback(Bitmap bitmap) {
+//                            ImageView add = new ImageView(getContext());
+//                            add.setImageBitmap(bitmap);
+//                            headerImags.add(add);
+//                        }
+//                    }).execute(imagePath);
+//                }
+//            }
+//        }).execute(HeaderImg);
+//
+//
+//    }
 
     //下拉属性
     private void initSwipeRefresh() {
@@ -213,16 +224,36 @@ public class FirstTileFragment extends Fragment {
     //加载数据
     private void initData() {
 
-//        Log.d("flag", "initData: -----"+MpathTitle+"1");
-
-        new MyAsycnTask(new MyAsycnTask.AsycnTaskCallBack() {
+        if (NetWorkUtils.isConnected(getContext())) {
+            new MyAsycnTask(new MyAsycnTask.AsycnTaskCallBack() {
                 @Override
                 public void AsycnTaskCallBack(byte[] bytes) {
-                    Data data = JSON.parseObject(new String(bytes), Data.class);
-                    mHandler.sendMessage(Message.obtain(mHandler,198,data.getData()));
-                    mData.addAll(data.getData());
+//                    Data data = JSON.parseObject(new String(bytes), Data.class);
+                    mHandler.sendMessage(Message.obtain(mHandler,198,bytes));
+//                    mData.addAll(data.getData());
                 }
-        }).execute(MpathTitle+index);
+            }).execute(MpathTitle+index);
+        }else {
+            //TODO 从磁盘获取网络数据
+            String root = getContext().getExternalCacheDir().getAbsolutePath();
+
+            String fileName = root+ File.separator+"FirstTitle";
+//            Log.d("flag", "initData: fileName"+fileName);
+
+            byte[] bytes = SdCardUtils.getByteFromFile(fileName);
+
+//            Log.d("flag", "initData: data  "+new String(bytes));
+
+            if (bytes != null) {
+                Data data = JSON.parseObject(new String(bytes),Data.class);
+
+//                Log.d("flag", "initData:data "+data.getData().get(0).getTitle());
+
+                mData.addAll(data.getData());
+
+                mBaseAdapter.notifyDataSetChanged();
+            }
+        }
     }
 
     private void initView(View ret) {

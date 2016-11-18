@@ -22,7 +22,7 @@ public class HeaderAsycnTask extends AsyncTask<String,Void,byte[]>{
 
         byte[] ret = null;
 
-        ret = HttpUtils.parse(headerPath);
+        ret = HttpUtils.getByteFromUrl(headerPath);
 
         return ret;
     }

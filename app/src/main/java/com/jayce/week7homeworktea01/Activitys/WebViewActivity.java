@@ -27,6 +27,8 @@ public class WebViewActivity extends AppCompatActivity {
 
     private SQLiteDatabase db;
 
+    private TeaDatabaseCollectHelper dbHelper;
+
     private WebView mWebView;
 
     private TextView title_textView,showTime,text_From;
@@ -40,6 +42,8 @@ public class WebViewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web_view);
+
+        dbHelper = new TeaDatabaseCollectHelper(this);
 
         Bundle bundle = getIntent().getExtras();
 
@@ -98,7 +102,9 @@ public class WebViewActivity extends AppCompatActivity {
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.webView_collect:
-                Cursor cursor = db.query(TeaDatabaseCollectHelper.TABLE_NAME, new String[]{"_id","id"}, null, null, null, null, null);
+                db = dbHelper.getReadableDatabase();
+                Cursor cursor = db.query(TeaDatabaseCollectHelper.TABLE_NAME,
+                        new String[]{"id"}, null, null, null, null, null);
                 int idIndex = cursor.getColumnIndex("id");
                 List<String> list=new ArrayList<>();
                 while (cursor.moveToNext()){
@@ -119,9 +125,9 @@ public class WebViewActivity extends AppCompatActivity {
                     values.put("wap_thumb",wap_thumb);
                     db.insert(TeaDatabaseCollectHelper.TABLE_NAME,null,values);
                     Toast.makeText(WebViewActivity.this, "收藏成功", Toast.LENGTH_SHORT).show();
+                    cursor.close();
+                    db.close();
                 }
-                cursor.close();
-                db.close();
 
 //                Toast.makeText(this,"已收藏！",Toast.LENGTH_SHORT).show();
                 break;
